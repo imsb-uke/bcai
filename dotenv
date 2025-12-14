@@ -1,0 +1,20 @@
+# Select LLM model
+# LLM_MODEL = 'openai|gpt-5'
+LLM_MODEL = 'openrouter|openai/gpt-5'
+
+# File dirs (fixed)
+SYSTEM_FILE_DIR = '../docs/system.md'
+HISTORY_DIR = 'history/'
+FILE_DIR = 'files/'
+USER_FILE = 'users.csv'
+
+# API_keys (confidentional)
+OPENAI_API_KEY=XXX
+
+OLLAMA_API_KEY=XXX
+
+OPENROUTER_API_KEY=XXX
+
+ESM3_TOKEN=XXX
+
+AF3_TOKEN=XXX

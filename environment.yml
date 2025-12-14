@@ -1,0 +1,46 @@
+name: bcai
+channels:
+  - conda-forge
+  - defaults
+
+dependencies:
+  - python=3.11
+  - pip
+  - mamba
+  # core scientific stack
+  - numpy<2
+  - pandas
+  - scikit-learn
+  - matplotlib
+  - seaborn
+  - tqdm
+  - ipykernel
+  - nodejs
+  - networkx
+  - plotly
+  # chemistry / structural biology
+  - openbabel=3.1.1
+  - plip=2.3.0
+  - pymol-open-source
+  - pdb2pqr
+  - propka
+  - gemmi
+  # apps / tools
+  - streamlit
+
+  - pip:
+      - mcp[cli]==1.10.1
+      - openai==1.75.0
+      - ollama
+      - python-dotenv
+      - httpx
+      - py3Dmol==2.0.3
+      - rdkit-pypi==2022.9.5
+      - meeko==0.5.0
+      - condacolab==0.1.7
+      - spyrmsd==0.6.0
+      - torch==2.5.0
+      - esm
+      - admet-ai
+      - pyfoldx
+      # - cdpkit

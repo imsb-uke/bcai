@@ -1,0 +1,31 @@
+version: '3.3'
+
+services:
+    bcai-streamlit:
+        build:
+            context: .
+        container_name: bcai
+        tty: true
+        restart: unless-stopped
+        labels:
+            - "traefik.enable=true"
+            - "traefik.http.routers.bcai-rule-name.rule=Host(`bcai.ims.bio`)"
+            - "traefik.http.services.bcai-rule-name.loadbalancer.server.port=8501"
+            - "traefik.http.routers.bcai-rule-name.middlewares=dbauth"
+            - "traefik.http.middlewares.dbauth.basicauth.usersfile=/configuration/auth/users"
+            - "traefik.http.routers.bcai-rule-name.tls.certresolver=letsencrypt"
+        volumes:
+            - './:/workspace'
+        networks:
+            - traefik
+            - db
+        deploy:
+            resources:
+                limits:
+                    cpus: "12"
+                    memory: "16g"
+
+networks:
+    db:
+    traefik:
+        external: true

@@ -1,0 +1,20 @@
+# Select LLM model
+# LLM_MODEL = 'openai|gpt-5'
+LLM_MODEL = 'openrouter|openai/gpt-5'
+
+# File dirs (fixed)
+SYSTEM_FILE_DIR = '../docs/system.md'
+HISTORY_DIR = 'history/'
+FILE_DIR = 'files/'
+USER_FILE = 'users.csv'
+
+# API_keys (confidentional)
+OPENAI_API_KEY=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
+
+OLLAMA_API_KEY=af56bee9c77e44779505bbc985290680.QmWCZGXf4bFZFxIlcOqA8IAp
+
+OPENROUTER_API_KEY=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
+
+ESM3_TOKEN=6WJt3bjDeg860pJWRO5eM0
+
+AF3_TOKEN=XXX

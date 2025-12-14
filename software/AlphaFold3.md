@@ -1,4 +1,3 @@
-**Use DiffDock**
+**Use AlphaFold 3**
 
-Install diffdock in the bcai environment (https://github.com/gcorso/DiffDock)
 

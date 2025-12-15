@@ -347,27 +347,35 @@ def run_molecular_docking(query_table_dir: str,
 
     start = time.time()
     for i in range(len(df)):
+
+        if method == 'diffdock':
+            inference_steps = 10
+            complex_name = df['protein_name'][i]
+            result_dir_diffdock = os.path.join(result_dir, f'dock_{method}_{protein_name}')
+            os.system(f"python -m ../software/DiffDock/inference --protein_ligand_csv {df_docking_diffdock} --out_dir {result_dir_diffdock} --inference_steps {inference_steps} --samples_per_complex 40 --actual_steps 18 --no_final_step_noise"}
     
-        protein_name = df['protein_name'][i]
-        ligand_name = df['ligand_name'][i]
-        dock_pdbqt_dir = os.path.join(result_dir, f'dock_{docking_method}_{protein_name}_{ligand_name}.pdbqt')
-
-        # if os.path.exists(dock_pdbqt_dir):
-        #     continue
-            
-        query_dict = {
-            'protein_pdbqt_dir' : df['protein_pdbqt_file'][i],
-            'ligand_pdbqt_dir' : df['ligand_pdbqt_file'][i],
-            'constraint_file_dir' : df['constraint_file'][i],
-            'output_pdbqt_dir' : dock_pdbqt_dir,
-        }
-                                              
-        run_docking(query_dict, method = docking_method, n_cpu = n_cpu, exh = exhaustiveness)
-        # !echo {i} >> output.log
-
-        # Extract pose sdf files
-        ligand_pose_pdb_dir = os.path.join(result_dir, f'{docking_method}_{protein_name}_{ligand_name}_pose_.sdf')
-        os.system(f'obabel {dock_pdbqt_dir} -O {ligand_pose_pdb_dir} -m > /dev/null 2>&1')
+        else:
+    
+            protein_name = df['protein_name'][i]
+            ligand_name = df['ligand_name'][i]
+            dock_pdbqt_dir = os.path.join(result_dir, f'dock_{docking_method}_{protein_name}_{ligand_name}.pdbqt')
+    
+            # if os.path.exists(dock_pdbqt_dir):
+            #     continue
+                
+            query_dict = {
+                'protein_pdbqt_dir' : df['protein_pdbqt_file'][i],
+                'ligand_pdbqt_dir' : df['ligand_pdbqt_file'][i],
+                'constraint_file_dir' : df['constraint_file'][i],
+                'output_pdbqt_dir' : dock_pdbqt_dir,
+            }
+                                                  
+            run_docking(query_dict, method = docking_method, n_cpu = n_cpu, exh = exhaustiveness)
+            # !echo {i} >> output.log
+    
+            # Extract pose sdf files
+            ligand_pose_pdb_dir = os.path.join(result_dir, f'{docking_method}_{protein_name}_{ligand_name}_pose_.sdf')
+            os.system(f'obabel {dock_pdbqt_dir} -O {ligand_pose_pdb_dir} -m > /dev/null 2>&1')
     
     end = time.time()
     time_min = (end - start) / 60

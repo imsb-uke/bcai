@@ -1,5 +1,5 @@
 ---
-name: Add a feature
+name: Add feature
 about: Domain experts can bring forward ideas to be implemented.
 title: Add a feature
 labels: ''

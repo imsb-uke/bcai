@@ -21,15 +21,21 @@ docker run --rm -it -p 8501:8501 -v "$PWD":/workspace bcai-image bash
 ```
 
 **Use of external softwares:**
-Instrutions to install and run external softwares is provided in the `software` directory [./software](here) 
+Instructions to install and run external softwares is provided in the `software` directory [./software](here) 
 
 ### User access tokens
 * To use cloud-based LLM models, three options are availabe: OpenAI [https://openai.com/api/], Ollama [https://ollama.com/], OpenRouter [https://openrouter.ai/]. These access tokens should be added to the `env` file.
 * The use of ESM3 [https://github.com/evolutionaryscale/esm] and AlphaFold3 [https://github.com/google-deepmind/alphafold3] requires user access tokens. These access tokens should be added to the `env` file.
 
-## Use BioChemAIgent
+## Contributions
+This repository provides a community-oriented registry specialized for the development of agentic systems for drug discovery and structural biology.
+* Domain experts can bring forward ideas to be implemented;
+* Developers can propose or refine MCP servers to broaden and improve the agent’s functionality.
 
-
-
+1. Create a new issue
+2. Select the template
+   - `Add feature` to suggest new functionalities to be added,
+   - `Add MCP server` to suggest an existing MCP server.
+3. Make a description of your suggestion and publish the issue.
 
 

@@ -270,7 +270,7 @@ def protonate_and_optimize_ligand(input_file: str,
         }
 
         
-def cxsmiles2smiles(cxsmiles: str, remove_counterions: bool = True):
+def cxsmiles2smiles(cxsmiles: str, rmv_counterions: bool = True):
 
     """Convert CXSMILES to canonical SMILES"""
     
@@ -279,7 +279,7 @@ def cxsmiles2smiles(cxsmiles: str, remove_counterions: bool = True):
     canonical_smiles = Chem.MolToSmiles(mol, canonical=True)
 
     # Remove counterions if any
-    if remove_counterions:
+    if rmv_counterions:
         canonical_smiles = remove_counterions(canonical_smiles)
 
     return canonical_smiles

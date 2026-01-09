@@ -39,3 +39,12 @@ This repository provides a community-oriented registry specialized for the devel
 3. Make a description of your suggestion and publish the issue.
 
 
+## Project status
+BioChemAIgent is an open-source research framework for structure-based drug discovery.
+The method is described in a bioRxiv preprint and has **not yet undergone peer review**.
+The API may evolve as the framework is refined.
+
+## Citation
+If you use BioChemAIgent, please cite:
+
+Yousefi, B., Laubach, N. C., Heins, S., Testa, L., Gersting, S. W., & Bonn, S. (2025). BioChemAIgent: An AI-driven Protein Modeling and Docking Framework for Structure-Based Drug Discovery. bioRxiv, 2025-12.

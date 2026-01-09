@@ -352,7 +352,7 @@ def run_molecular_docking(query_table_dir: str,
             inference_steps = 10
             complex_name = df['protein_name'][i]
             result_dir_diffdock = os.path.join(result_dir, f'dock_{method}_{protein_name}')
-            os.system(f"python -m ../software/DiffDock/inference --protein_ligand_csv {df_docking_diffdock} --out_dir {result_dir_diffdock} --inference_steps {inference_steps} --samples_per_complex 40 --actual_steps 18 --no_final_step_noise"}
+            os.system(f"python -m ../software/DiffDock/inference --protein_ligand_csv {df_docking_diffdock} --out_dir {result_dir_diffdock} --inference_steps {inference_steps} --samples_per_complex 40 --actual_steps 18 --no_final_step_noise")
     
         else:
     

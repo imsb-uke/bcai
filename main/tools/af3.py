@@ -274,9 +274,9 @@ def run_af3(
     seed_max = 1
     seed = 1
 
-    if n_chain_per_sequence in None:
+    if n_chain_per_sequence is None:
         n_chain_per_sequence = [1] * len(protein_sequence)
-    if uniprot_id in None:
+    if uniprot_id is None:
         uniprot_id = ['None'] * len(protein_sequence)
                 
     protein_dict = {
@@ -297,7 +297,7 @@ def run_af3(
         }
         }
     else:
-        ligand_sdf = {}
+        ligand_dict = {}
         
     make_af3_json(project_name, protein_dict, ligand_dict, af3_path, seed_max = seed_max, verbos=True)
 
@@ -309,7 +309,7 @@ def run_af3(
     print(protein_cif_dir)
     
     # Convert CIF to PDB
-    protein_pdb_dir = os.path.join(FILES, project_name + 'pdb')
+    protein_pdb_dir = os.path.join(FILES, project_name + '.pdb')
     cif2pdb(protein_cif_dir, protein_pdb_dir)
 
     return {

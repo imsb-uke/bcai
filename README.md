@@ -1,3 +1,5 @@
+This project is licensed under the Creative Commons Attribution-NonCommercial 4.0 International License (CC BY-NC 4.0).
+
 # BioChemAIgent: An AI-driven Protein Modeling and Docking Framework for Structure-Based Drug Discovery
 
 Computational and AI-based methods have advanced drug discovery, yet most remain task-specific and require substantial expert integration. We introduce BioChemAIgent, an agentic framework that integrates state-of-the-art AI models with established computational chemistry tools to enable end-to-end small molecule analysis, protein modeling, and molecular docking, with a chatbot interface accessible online. To foster community engagement and extensibility, we established an openly accessible user interface alongside a centralized registry that consolidates resources for developing and integrating next-generation tools in drug discovery and structural biology.

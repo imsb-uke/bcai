@@ -115,7 +115,7 @@ def prepare_library(
             df_ligand_rows.append({
                 "ligand_name":       name,
                 "ligand_smiles":     smiles,
-                "ligsnd_sdf_file":   os.path.join(ligand_dir, f"{name}_ph{str(ph).replace('.', '')}_min.sdf"),
+                "ligand_sdf_file":   os.path.join(ligand_dir, f"{name}_ph{str(ph).replace('.', '')}_min.sdf"),
                 "ligand_pdb_file":   os.path.join(ligand_dir, f"{name}.pdb"),
                 "ligand_pdbqt_file": pdbqt_path,
             })
@@ -133,7 +133,7 @@ def prepare_library(
 
             if out.get("ligand_df_file"):
                 df_tmp = pd.read_csv(out["ligand_df_file"])
-                for col in ("ligsnd_sdf_file", "ligand_pdb_file", "ligand_pdbqt_file"):
+                for col in ("ligand_sdf_file", "ligand_pdb_file", "ligand_pdbqt_file"):
                     src = df_tmp.at[0, col]
                     if src and os.path.exists(str(src)):
                         dst = os.path.join(ligand_dir, os.path.basename(src))

@@ -4,7 +4,7 @@ import json
 from dotenv import load_dotenv
 import streamlit as st
 
-load_dotenv("../env")
+load_dotenv("../env", override=True)
 import src.utils_client as utils
 import src.user as user
 from src.history import save_history, load_history, message_to_dict
@@ -27,17 +27,13 @@ if "user" not in st.session_state:
 # Main page
 # -----------------------------------------------------------------------------
 
-# History and file directory
-HISTORY_PARENT_DIR = "history"
-SESSION_PARENT_DIR = "session"
-FILE_PARENT_DIR    = "files"
-os.environ["HISTORY_DIR"] = os.path.join(HISTORY_PARENT_DIR, st.session_state['user'])
-os.environ["SESSION_DIR"] = os.path.join(SESSION_PARENT_DIR, st.session_state['user'])
-os.environ["FILE_DIR"]    = os.path.join(FILE_PARENT_DIR,    st.session_state['user'])
-
-HISTORY_DIR = os.getenv("HISTORY_DIR")
-SESSION_DIR = os.getenv("SESSION_DIR")
-FILE_DIR    = os.getenv("FILE_DIR")
+# History and file directory — base dirs come from env (override=True ensures fresh values on each rerun)
+HISTORY_DIR = os.path.join(os.getenv("HISTORY_DIR", "history").rstrip("/"), st.session_state['user'])
+SESSION_DIR = os.path.join(os.getenv("SESSION_DIR", "session").rstrip("/"), st.session_state['user'])
+FILE_DIR    = os.path.join(os.getenv("FILE_DIR",    "files").rstrip("/"),   st.session_state['user'])
+os.environ["HISTORY_DIR"] = HISTORY_DIR
+os.environ["SESSION_DIR"] = SESSION_DIR
+os.environ["FILE_DIR"]    = FILE_DIR
 
 HISTORY_FILE = os.path.join(HISTORY_DIR, "chat_history.pkl")
 SESSION_FILE = os.path.join(SESSION_DIR, "chat_session.json")

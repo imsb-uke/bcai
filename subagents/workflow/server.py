@@ -80,7 +80,7 @@ def delete_workflow(name: str) -> dict:
     return pipeline.delete_workflow(name=name)
 
 
-# ── Tool 3: run_workflow (async) ──────────────────────────────────────────────
+# ── Tool 4: run_workflow (async) ──────────────────────────────────────────────
 
 @mcp.tool()
 def run_workflow(

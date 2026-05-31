@@ -229,7 +229,8 @@ with st.sidebar:
             import json as _json
             with open(_wp_file) as _f:
                 _wp = _json.load(_f)
-            st.markdown("**Workflow**")
+            st.markdown("---")
+            st.subheader("Workflow")
             _total = _wp.get("total", "?")
             for _s in _wp.get("steps", []):
                 if _s["step_id"] == "done":
@@ -238,11 +239,11 @@ with st.sidebar:
                     st.caption(f"✅ step {_s['step']}/{_total}: {_s['message']}")
                 else:
                     st.caption(f"⚙️ step {_s['step']}/{_total}: {_s['message']}")
-            st.markdown("---")
         except Exception:
             pass
     # ---
 
+    st.markdown("---")
     st.subheader("Chat history")
     with st.container(height=300):
         # Get the history file list sorted by date

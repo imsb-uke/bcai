@@ -59,6 +59,7 @@ if "job_ready_mtime" not in st.session_state:
 
 if "job_notification" not in st.session_state:    # persistent banner text; None = no banner
     st.session_state["job_notification"] = None
+
 # ---
 
 def history_file_changed(path: str) -> bool:
@@ -169,6 +170,9 @@ with st.sidebar:
         logout = st.button("Logout")
     with col2:
         clear_chat = st.button("Clear chat")
+    with col3:
+        if st.button("Refresh", key="refresh_top"):
+            st.rerun()
 
     chat_name = st.text_input("Chat name", "my_chat").strip()
 
@@ -215,6 +219,30 @@ with st.sidebar:
         if os.path.exists(src):
             os.system(f"rm {src}")
             
+    # claude ---
+    # Workflow progress — only rendered when workflow_progress.json exists.
+    # Stays invisible when idle; appears above Chat history so the user notices it.
+    # User clicks Refresh (top button) to update.
+    _wp_file = os.path.join(SESSION_DIR, "workflow_progress.json")  # claude: per-user
+    if os.path.exists(_wp_file):
+        try:
+            import json as _json
+            with open(_wp_file) as _f:
+                _wp = _json.load(_f)
+            st.markdown("**Workflow**")
+            _total = _wp.get("total", "?")
+            for _s in _wp.get("steps", []):
+                if _s["step_id"] == "done":
+                    st.caption("✅ complete")
+                elif _s["status"] == "done":
+                    st.caption(f"✅ step {_s['step']}/{_total}: {_s['message']}")
+                else:
+                    st.caption(f"⚙️ step {_s['step']}/{_total}: {_s['message']}")
+            st.markdown("---")
+        except Exception:
+            pass
+    # ---
+
     st.subheader("Chat history")
     with st.container(height=300):
         # Get the history file list sorted by date

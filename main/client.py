@@ -20,6 +20,14 @@ from src.history import save_history, load_history, message_to_dict
 
 os.system(f"echo 'Run client.py {datetime.now()}' > client.log")
 
+# claude ---
+# On startup, clear per-user session files left over from a previous run.
+import glob as _glob
+for _f in _glob.glob("session/*/job_ready.json") + _glob.glob("session/*/workflow_progress.json"):
+    try:    os.remove(_f)
+    except Exception: pass
+# ---
+
 # ----------------------------
 # Configurations and initiations
 # ----------------------------

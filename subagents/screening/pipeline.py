@@ -18,17 +18,26 @@ import threading
 import pandas as pd
 import biochem as bc
 
+# claude ---
+LIBRARY_DIR = os.getenv("LIBRARY_DIR")
+_BUILTIN = {
+    "enamine_real": os.path.join(LIBRARY_DIR, "_sources/enamine_real.csv"),
+    "drugbank":     os.path.join(LIBRARY_DIR, "_sources/drugbank.csv"),
+    "zinc":         os.path.join(LIBRARY_DIR, "_sources/zinc.csv"),
+}
+# ---
+
 
 # ── prepare_library ───────────────────────────────────────────────────────────
 
 def prepare_library(
-    source_csv:  str,
-    library_dir: str,
-    n_sample:    int   = 5000,
-    ph:          float = 7.4,
-    job_id:      str   = None,  # claude: used to name the per-job tmp dir
-    stop_event          = None,  # claude: threading.Event; set to cancel between compounds
-    progress_cb         = None,
+    source:       str,
+    library_name: str,
+    n_sample:     int   = 5000,
+    ph:           float = 7.4,
+    job_id:       str   = None,  # claude: used to name the per-job tmp dir
+    stop_event           = None,  # claude: threading.Event; set to cancel between compounds
+    progress_cb          = None,
 ) -> dict:
     """
     Prepare a compound library for virtual screening.
@@ -38,20 +47,31 @@ def prepare_library(
     Supports resume: compounds whose .pdbqt already exists are skipped.
 
     Args:
-        source_csv:  path to CSV with 'smiles' and 'id' columns.
-        library_dir: directory to store the prepared library.
-        n_sample:    randomly sample this many compounds (0 = use all).
-        ph:          protonation pH for ligand preparation.
-        progress_cb: optional callable(str) for progress messages.
+        source:       built-in alias ('drugbank', 'enamine_real', 'zinc') or
+                      path to a CSV with 'smiles' and 'id' columns.
+        library_name: name for this library; stored under LIBRARY_DIR/library_name/.
+        n_sample:     randomly sample this many compounds (0 = use all).
+        ph:           protonation pH for ligand preparation.
+        progress_cb:  optional callable(str) for progress messages.
 
     Returns:
         {
+            "library_name":   str,
             "library_dir":    str,
             "df_ligand_file": str,   # path to df_ligand.csv
             "n_prepared":     int,
             "n_errors":       int,
         }
     """
+    source_csv  = _BUILTIN.get(source, source)  # claude: resolve alias or use as path
+    library_dir = os.path.join(LIBRARY_DIR, library_name)  # claude
+
+    if not os.path.exists(source_csv):
+        raise FileNotFoundError(
+            f"Source not found: '{source_csv}'. "
+            f"Valid aliases: {list(_BUILTIN.keys())}."
+        )
+
     def _progress(msg):
         if progress_cb:
             progress_cb(msg)
@@ -142,6 +162,7 @@ def prepare_library(
     shutil.rmtree(tmp_dir, ignore_errors=True)  # claude: delete job tmp dir
 
     return {
+        "library_name":   library_name,  # claude
         "library_dir":    library_dir,
         "df_ligand_file": df_ligand_path,
         "n_prepared":     len(df_ligand_rows),
@@ -153,7 +174,7 @@ def prepare_library(
 
 def run_virtual_screening(
     protein_df_file: str,
-    library_dir:     str,
+    library_name:    str,
     project_name:    str   = "my_screening",
     docking_method:  str   = "smina",
     exhaustiveness:  str   = "16",
@@ -172,7 +193,7 @@ def run_virtual_screening(
 
     Args:
         protein_df_file: path to protein CSV produced by bc.prepare_protein().
-        library_dir:     path to a prepared library directory (from prepare_library()).
+        library_name:    name of a prepared library (under LIBRARY_DIR/).
         project_name:    name for this run; results saved under file_dir/project_name/.
         docking_method:  smina | gnina | vina.
         exhaustiveness:  docking exhaustiveness (higher = more thorough, slower).
@@ -182,7 +203,8 @@ def run_virtual_screening(
     Returns the bc.run_molecular_docking() result dict, augmented with
     project_name and result_dir.
     """
-    file_dir = file_dir or os.getenv("FILE_DIR", "files")  # claude
+    library_dir = os.path.join(LIBRARY_DIR, library_name)  # claude
+    file_dir    = file_dir or os.getenv("FILE_DIR", "files")  # claude
 
     def _progress(msg):
         if progress_cb:

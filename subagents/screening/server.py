@@ -39,13 +39,6 @@ from subagents.screening import pipeline
 # Base directory for all prepared libraries
 LIBRARY_DIR = os.getenv("LIBRARY_DIR")
 
-# Built-in library aliases → resolved source CSV paths
-_BUILTIN = {
-    "enamine_real": os.path.join(LIBRARY_DIR, "_sources/enamine_real.csv"),
-    "drugbank":     os.path.join(LIBRARY_DIR, "_sources/drugbank.csv"),
-    "zinc":         os.path.join(LIBRARY_DIR, "_sources/zinc.csv"),
-}
-
 # ── MCP server ────────────────────────────────────────────────────────────────
 
 mcp = FastMCP(name="ScreeningAgent")
@@ -108,37 +101,25 @@ def prepare_library(
     n_sample:     randomly sample this many compounds from source (0 = use all).
     ph:           protonation pH for ligand preparation.
     """
-    resolved_source = _BUILTIN.get(source, source)
-
-    if not os.path.exists(resolved_source):
-        return {
-            "message": (
-                f"Source file not found: '{resolved_source}'. "
-                f"Provide a valid CSV path or one of: {list(_BUILTIN.keys())}."
-            )
-        }
-
-    library_dir = os.path.join(LIBRARY_DIR, library_name)
-    job_id      = _new_job("prepare_library")
-    stop_event  = get_stop_event(job_id)  # claude
+    job_id     = _new_job("prepare_library")
+    stop_event = get_stop_event(job_id)  # claude
 
     def _run():
         try:
             result = pipeline.prepare_library(
-                source_csv  = resolved_source,
-                library_dir = library_dir,
-                n_sample    = n_sample,
-                ph          = ph,
-                job_id      = job_id,      # claude
-                stop_event  = stop_event,  # claude
-                progress_cb = lambda msg: _update_job(job_id, progress=msg),
+                source       = source,
+                library_name = library_name,
+                n_sample     = n_sample,
+                ph           = ph,
+                job_id       = job_id,      # claude
+                stop_event   = stop_event,  # claude
+                progress_cb  = lambda msg: _update_job(job_id, progress=msg),
             )
             _update_job(
                 job_id,
                 status   = "done",
                 progress = f"done: {result['n_prepared']} prepared, {result['n_errors']} errors",
-                result   = {**result, "library_name": library_name,
-                            "next_steps": ["run_screening(protein_df_file, library_name)"]},
+                result   = {**result, "next_steps": ["run_screening(protein_df_file, library_name)"]},
             )
         except Exception as e:
             _update_job(job_id, status="failed", error=str(e))
@@ -177,19 +158,7 @@ def run_screening(
     docking_method:  smina | gnina | vina.
     exhaustiveness:  search exhaustiveness (higher = slower but more thorough).
     """
-    file_dir    = os.getenv("FILE_DIR", file_dir)
-    library_dir = os.path.join(LIBRARY_DIR, library_name)
-
-    if not os.path.exists(os.path.join(library_dir, "df_ligand.csv")):
-        return {
-            "message": (
-                f"Library '{library_name}' not found or not prepared. "
-                f"Run prepare_library() first, or check list_libraries()."
-            )
-        }
-    if not os.path.exists(protein_df_file):
-        return {"message": f"protein_df_file not found: '{protein_df_file}'"}
-
+    file_dir   = os.getenv("FILE_DIR", file_dir)
     job_id     = _new_job("run_screening")
     stop_event = get_stop_event(job_id)  # claude
 
@@ -197,7 +166,7 @@ def run_screening(
         try:
             result = pipeline.run_virtual_screening(
                 protein_df_file = protein_df_file,
-                library_dir     = library_dir,
+                library_name    = library_name,
                 project_name    = project_name,
                 docking_method  = docking_method,
                 exhaustiveness  = exhaustiveness,

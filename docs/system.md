@@ -229,7 +229,7 @@ Every tool that accepts a `file_dir` parameter must receive the value from `File
 - To download the pdb file given the pdb id use `get_pdb` and NOT `download_structure`.
 - Some tools require API tokens. If a tool fails, warn the user to check that the relevant token is configured in the environment:
   - `run_esm3` → `ESM3_TOKEN`
-  - `run_af3` → `AF3_TOKEN`
+  - `run_af3` → `AF3_PATH` (path to the AlphaFold3 installation directory)
   - `extract_information` → needs an LLM API key (`OPENAI_API_KEY` or `OPENROUTER_API_KEY`) and `LLM_MODEL_LITERATURE` (format: `source|model`, e.g. `openrouter|openai/gpt-4o-mini`) — the model source must match the API key provided
   - `search_literature` → `S2_API_KEY` (optional — improves reliability)
 

@@ -91,6 +91,7 @@ def prepare_library(
     library_name: str,
     n_sample:     int   = 5000,
     ph:           float = 7.4,
+    file_dir:     str,
 ) -> dict:
     """
     Prepare a compound library for screening. Returns a job_id immediately.
@@ -100,9 +101,10 @@ def prepare_library(
     library_name: name to store the prepared library under in data/libraries/.
     n_sample:     randomly sample this many compounds from source (0 = use all).
     ph:           protonation pH for ligand preparation.
+    file_dir:     output directory for temporary files.
     """
     job_id     = _new_job("prepare_library")
-    stop_event = get_stop_event(job_id)  # claude
+    stop_event = get_stop_event(job_id)
 
     def _run():
         try:
@@ -111,8 +113,9 @@ def prepare_library(
                 library_name = library_name,
                 n_sample     = n_sample,
                 ph           = ph,
-                job_id       = job_id,      # claude
-                stop_event   = stop_event,  # claude
+                file_dir     = file_dir,
+                job_id       = job_id,
+                stop_event   = stop_event,
                 progress_cb  = lambda msg: _update_job(job_id, progress=msg),
             )
             _update_job(
@@ -130,8 +133,6 @@ def prepare_library(
         "message":    f"Library preparation started for '{library_name}'.",
         "job_id":     job_id,
         "status":     "running",
-        "source":     resolved_source,
-        "n_sample":   n_sample,
         "next_steps": ["check_status(job_id)"],
     }
 
@@ -146,7 +147,7 @@ def run_screening(
     docking_method:  str  = "smina",
     exhaustiveness:  str  = "16",
     use_docker:      bool = False,  # claude: set True when running without native binaries (e.g. on Mac)
-    file_dir:        str  = "files",
+    file_dir:        str,
 ) -> dict:
     """
     Run virtual screening of a compound library against a prepared protein.
@@ -158,7 +159,6 @@ def run_screening(
     docking_method:  smina | gnina | vina.
     exhaustiveness:  search exhaustiveness (higher = slower but more thorough).
     """
-    file_dir   = os.getenv("FILE_DIR", file_dir)
     job_id     = _new_job("run_screening")
     stop_event = get_stop_event(job_id)  # claude
 
@@ -198,7 +198,7 @@ def get_top_hits(
     docking_method:  str   = "smina",
     top_n:           int   = 20,
     score_threshold: float = None,
-    file_dir:        str   = "files",
+    file_dir:        str,
 ) -> dict:
     """
     Rank and return top hits from a completed screening run.
@@ -209,7 +209,6 @@ def get_top_hits(
     score_threshold: optional upper bound on affinity (kcal/mol); e.g. -7.0
                      means only return compounds with affinity ≤ -7.0.
     """
-    file_dir   = os.getenv("FILE_DIR", file_dir)
     result_dir = os.path.join(file_dir, project_name)
 
     if not os.path.exists(result_dir):

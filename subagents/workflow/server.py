@@ -86,7 +86,7 @@ def delete_workflow(name: str) -> dict:
 def run_workflow(
     workflow_name: str,
     username:      str,
-    file_dir:      str = "files",
+    file_dir:      str,
 ) -> dict:
     """
     Run a saved workflow asynchronously. Returns a job_id immediately.
@@ -98,7 +98,6 @@ def run_workflow(
     username:      the logged-in user's name (used to write per-user progress file).
     file_dir:      base output directory for generated files.
     """
-    file_dir    = file_dir or os.getenv("FILE_DIR", "files")
     session_dir = os.path.join("session", username)  # claude: per-user progress
 
     # Validate before starting the thread so the error is returned immediately

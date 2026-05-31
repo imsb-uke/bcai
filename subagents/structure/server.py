@@ -46,6 +46,8 @@ def run_af3(
     ligand_sdf_dir:         str  | None = None,
     n_ligand:               int         = 1,
     project_name:           str         = "my_project",
+    af3_path:               str  | None = None,
+    file_dir:               str,
 ) -> dict:
     """
     Run AlphaFold 3 structure prediction. Returns a job_id immediately;
@@ -57,12 +59,14 @@ def run_af3(
     ligand_sdf_dir:       optional path to ligand SDF file (protein–ligand complex).
     n_ligand:             number of ligand copies.
     project_name:         name for this prediction run (used for output files).
+    af3_path:             path to the AlphaFold3 installation (falls back to AF3_PATH env var).
+    file_dir:             output directory for generated files.
     """
     job_id     = _new_job("run_af3")
-    stop_event = get_stop_event(job_id)  # claude
+    stop_event = get_stop_event(job_id)
 
     def _run():
-        if stop_event and stop_event.is_set():  # claude: exit early if already cancelled
+        if stop_event and stop_event.is_set():
             return
         try:
             _update_job(job_id, progress="submitting AF3 job and waiting for output...")
@@ -73,6 +77,8 @@ def run_af3(
                 ligand_sdf_dir       = ligand_sdf_dir,
                 n_ligand             = n_ligand,
                 project_name         = project_name,
+                af3_path             = af3_path,
+                file_dir             = file_dir,
             )
             _update_job(job_id, status="done", progress="done", result=result)
         except Exception as e:
@@ -96,7 +102,7 @@ def run_esm3(
     task:          str,
     protein_name:  str = "my_protein",
     model_name:    str = "esm3-large-2024-03",
-    file_dir:      str = "files",
+    file_dir:      str,
 ) -> dict:
     """
     Run ESM3 structure or sequence prediction. Returns a job_id immediately;
@@ -108,9 +114,8 @@ def run_esm3(
                    'residue_annotations'
     protein_name:  name used for output files.
     model_name:    ESM3 model variant.
-    file_dir:      output directory (overridden by FILE_DIR env var if set).
+    file_dir:      output directory for generated files.
     """
-    file_dir   = file_dir or os.getenv("FILE_DIR", "files")  # claude
     job_id     = _new_job("run_esm3")
     stop_event = get_stop_event(job_id)  # claude
 

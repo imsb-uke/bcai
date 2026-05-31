@@ -314,7 +314,7 @@ async def process_query(history_file: str, model: str) -> str:
 async def main() -> None:
     print("\n=========================")
     print("Welcome to BioChemAIgent Chat, a Drug Developer Agent ....")
-    print(f"Version: 2.0.0")
+    print(f"Version: 2.1.0")
     print("=========================\n")
     print("Here is the list of availbe tools\n")
         

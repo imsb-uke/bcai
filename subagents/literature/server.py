@@ -51,7 +51,7 @@ def search_literature(
     query:       str,
     source:      str = "both",
     max_results: int = 20,
-    file_dir:    str = "files",
+    file_dir:    str,
 ) -> dict:
     """
     Search the scientific literature and retrieve papers with abstracts.
@@ -62,7 +62,6 @@ def search_literature(
     max_results: maximum papers to retrieve per source.
     file_dir:    directory to save the output JSON file.
     """
-    file_dir   = os.getenv("FILE_DIR", file_dir)
     job_id     = _new_job("search_literature")
     stop_event = get_stop_event(job_id)  # claude
 
@@ -97,7 +96,7 @@ def search_literature(
 def extract_information(
     papers_file: str,
     question:    str,
-    file_dir:    str = "files",
+    file_dir:    str,
 ) -> dict:
     """
     For each paper in papers_file, ask the LLM the given question and save
@@ -110,7 +109,6 @@ def extract_information(
                  'What cell lines or animal models were used?'
     file_dir:    used to resolve relative paths.
     """
-    file_dir = file_dir or os.getenv("FILE_DIR", "files")  # claude
 
     if not os.path.exists(papers_file):
         return {"message": f"papers_file not found: '{papers_file}'"}

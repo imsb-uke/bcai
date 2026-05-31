@@ -35,6 +35,7 @@ def prepare_library(
     library_name: str,
     n_sample:     int   = 5000,
     ph:           float = 7.4,
+    file_dir:     str,
     job_id:       str   = None,  # claude: used to name the per-job tmp dir
     stop_event           = None,  # claude: threading.Event; set to cancel between compounds
     progress_cb          = None,
@@ -91,11 +92,9 @@ def prepare_library(
     total = len(df)
 
     ligand_dir = os.path.join(library_dir, "ligands")
-    # claude ---
-    # Put intermediate files in a job-specific tmp dir inside FILE_DIR so they
+    # Put intermediate files in a job-specific tmp dir inside file_dir so they
     # never pollute the main files/ folder. Deleted at the end of this function.
-    _file_dir  = os.getenv("FILE_DIR", "files")
-    tmp_dir    = os.path.join(_file_dir, f"tmp_{job_id}" if job_id else "tmp_lib")
+    tmp_dir = os.path.join(file_dir, f"tmp_{job_id}" if job_id else "tmp_lib")
     # ---
     for d in (library_dir, ligand_dir, tmp_dir):
         os.makedirs(d, exist_ok=True)
@@ -180,7 +179,7 @@ def run_virtual_screening(
     exhaustiveness:  str   = "16",
     use_docker:      bool  = False,  # claude
     stop_event              = None,  # claude: threading.Event; set to cancel between compounds
-    file_dir:        str   = None,
+    file_dir:        str,
     progress_cb              = None,
 ) -> dict:
     """
@@ -204,7 +203,6 @@ def run_virtual_screening(
     project_name and result_dir.
     """
     library_dir = os.path.join(LIBRARY_DIR, library_name)  # claude
-    file_dir    = file_dir or os.getenv("FILE_DIR", "files")  # claude
 
     def _progress(msg):
         if progress_cb:

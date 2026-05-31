@@ -228,7 +228,7 @@ def list_workflows() -> dict:
 
 def execute_workflow(
     workflow_name: str,
-    file_dir:      str  = None,
+    file_dir:      str,
     session_dir:   str  = None,  # claude: per-user dir for progress file
     stop_event           = None,
     progress_cb          = None,
@@ -258,7 +258,6 @@ def execute_workflow(
             "step_outputs":  {step_id: result_dict, ...},
         }
     """
-    file_dir = file_dir or os.getenv("FILE_DIR", "files")
 
     def _progress(msg):
         if progress_cb:

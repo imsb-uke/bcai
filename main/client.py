@@ -231,14 +231,16 @@ async def process_query(history_file: str, model: str) -> str:
     # Prepare tool surface
     tools = await build_tools()
 
-    # Build message history
-    chat_history = load_history(history_file)
+    # Build message history.
+    # The system message is always rebuilt fresh from system.md on every query so that edits to system.md take effect immediately without interrupting running sessions.
+    chat_history   = load_history(history_file)
+    user_name     = os.path.splitext(os.path.basename(history_file))[0]
+    system_message = load_system_message() + f"\n\nCurrent user: {user_name}\nFile dir: files/{user_name}/"
     if chat_history[0]['role'] == 'system':
-        messages = chat_history
+        # If history already contains a system message (chat_history[0]), drop it and replace it with the freshly built one
+        messages = [{"role": "system", "content": system_message}] + chat_history[1:]
     else:
-        # claude: derive username from history filename and inject into system message
-        _user_name     = os.path.splitext(os.path.basename(history_file))[0]
-        system_message = load_system_message() + f"\n\nCurrent user: {_user_name}\nFile dir: files/{_user_name}/"
+        # else, just prepend the system message to the existing history
         messages = [{"role": "system", "content": system_message}] + chat_history
     # messages.append({"role": "user", "content": query})
 

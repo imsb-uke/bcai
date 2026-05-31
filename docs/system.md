@@ -219,7 +219,7 @@ Runs a saved workflow asynchronously, executing all steps in sequence without re
 
 Parameters:
 - `workflow_name`: name of the workflow to run (as saved by `save_workflow`)
-- `username`: the logged-in user's name (available from session context)
+- `username`: the logged-in user's name — use the value from `Current user:` in your context
 - `file_dir`: base output directory for generated files
 
 ## Other notes

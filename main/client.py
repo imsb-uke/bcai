@@ -236,7 +236,9 @@ async def process_query(history_file: str, model: str) -> str:
     if chat_history[0]['role'] == 'system':
         messages = chat_history
     else:
-        system_message = load_system_message()
+        # claude: derive username from history filename and inject into system message
+        _user_name     = os.path.splitext(os.path.basename(history_file))[0]
+        system_message = load_system_message() + f"\n\nCurrent user: {_user_name}"
         messages = [{"role": "system", "content": system_message}] + chat_history
     # messages.append({"role": "user", "content": query})
 

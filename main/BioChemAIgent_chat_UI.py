@@ -60,6 +60,9 @@ if "job_ready_mtime" not in st.session_state:
 if "job_notification" not in st.session_state:    # persistent banner text; None = no banner
     st.session_state["job_notification"] = None
 
+if "uploader_key" not in st.session_state:  # claude: incremented after upload to reset widget
+    st.session_state["uploader_key"] = 0
+
 # ---
 
 def history_file_changed(path: str) -> bool:
@@ -270,13 +273,34 @@ with st.sidebar:
     st.markdown("---")
 
     st.subheader("Files")
+    # claude ---
+    # Upload
+    _uploaded = st.file_uploader("Upload file", type=["pdb","sdf","csv","mol2","json","txt"],
+                                  label_visibility="collapsed", key=f"uploader_{st.session_state['uploader_key']}")
+    if _uploaded:
+        _save_path = os.path.join(FILE_DIR, _uploaded.name)
+        with open(_save_path, "wb") as _uf:
+            _uf.write(_uploaded.getbuffer())
+        st.session_state["uploader_key"] += 1
+        st.rerun()
+    # ---
+
     with st.container(height=300):
         # Get the file list sorted by date
-        file_list = sorted(os.listdir(FILE_DIR), 
+        file_list = sorted(os.listdir(FILE_DIR),
                            key=lambda f: os.path.getmtime(os.path.join(FILE_DIR, f)), reverse=True)
         for f in file_list:
             st.caption(f)
-                
+
+    # claude ---
+    # Download
+    _dl_files = [f for f in file_list if os.path.isfile(os.path.join(FILE_DIR, f))]
+    if _dl_files:
+        _dl_selected = st.selectbox("Download file", _dl_files, label_visibility="collapsed")
+        with open(os.path.join(FILE_DIR, _dl_selected), "rb") as _df:
+            st.download_button("⬇ Download", _df, file_name=_dl_selected)
+    # ---
+
     st.markdown("---")
 
     st.subheader("Access tokens")
@@ -309,13 +333,13 @@ for msg in st.session_state.messages:
                 content = utils.escape_brackets_outside_code(content)
                 st.markdown(content)
             if 'html_file' in globals() and html_file:
-                st.components.v1.html(
-                    f"""
+                st.iframe(
+                    src=f"""
                     <div style='transform:scale({plot_scale});transform-origin:top left;'>
                     {open(html_file).read()}
                     </div>
                     """,
-                    height=plot_height, scrolling=True
+                    height=plot_height
                 )
                 html_file = ''
         elif role == "tool":

@@ -30,12 +30,14 @@ if "user" not in st.session_state:
 # History and file directory
 HISTORY_PARENT_DIR = "history"
 SESSION_PARENT_DIR = "session"
+FILE_PARENT_DIR    = "files"
 os.environ["HISTORY_DIR"] = os.path.join(HISTORY_PARENT_DIR, st.session_state['user'])
 os.environ["SESSION_DIR"] = os.path.join(SESSION_PARENT_DIR, st.session_state['user'])
+os.environ["FILE_DIR"]    = os.path.join(FILE_PARENT_DIR,    st.session_state['user'])
 
 HISTORY_DIR = os.getenv("HISTORY_DIR")
 SESSION_DIR = os.getenv("SESSION_DIR")
-FILE_DIR = os.getenv("FILE_DIR")
+FILE_DIR    = os.getenv("FILE_DIR")
 
 HISTORY_FILE = os.path.join(HISTORY_DIR, "chat_history.pkl")
 SESSION_FILE = os.path.join(SESSION_DIR, "chat_session.json")

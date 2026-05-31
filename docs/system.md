@@ -222,6 +222,9 @@ Parameters:
 - `username`: the logged-in user's name — use the value from `Current user:` in your context
 - `file_dir`: base output directory for generated files
 
+## File directory
+Every tool that accepts a `file_dir` parameter must receive the value from `File dir:` in your context. Never use the default `"files"` — always pass the user-specific path (e.g. `files/behnam/`). This keeps each user's files isolated.
+
 ## Other notes
 - To download the pdb file given the pdb id use `get_pdb` and NOT `download_structure`.
 - Some tools require API tokens. If a tool fails, warn the user to check that the relevant token is configured in the environment:

@@ -89,9 +89,9 @@ def list_libraries() -> dict:
 def prepare_library(
     source:       str,
     library_name: str,
+    file_dir:     str,
     n_sample:     int   = 5000,
     ph:           float = 7.4,
-    file_dir:     str,
 ) -> dict:
     """
     Prepare a compound library for screening. Returns a job_id immediately.
@@ -143,11 +143,11 @@ def prepare_library(
 def run_screening(
     protein_df_file: str,
     library_name:    str,
+    file_dir:        str,
     project_name:    str  = "my_screening",
     docking_method:  str  = "smina",
     exhaustiveness:  str  = "16",
     use_docker:      bool = False,  # claude: set True when running without native binaries (e.g. on Mac)
-    file_dir:        str,
 ) -> dict:
     """
     Run virtual screening of a compound library against a prepared protein.
@@ -195,10 +195,10 @@ def run_screening(
 @mcp.tool()
 def get_top_hits(
     project_name:    str,
+    file_dir:        str,
     docking_method:  str   = "smina",
     top_n:           int   = 20,
     score_threshold: float = None,
-    file_dir:        str,
 ) -> dict:
     """
     Rank and return top hits from a completed screening run.

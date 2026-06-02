@@ -49,9 +49,9 @@ mcp = FastMCP(name="LiteratureAgent")
 @mcp.tool()
 def search_literature(
     query:       str,
+    file_dir:    str,
     source:      str = "both",
     max_results: int = 20,
-    file_dir:    str,
 ) -> dict:
     """
     Search the scientific literature and retrieve papers with abstracts.

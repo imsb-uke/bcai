@@ -33,9 +33,9 @@ _BUILTIN = {
 def prepare_library(
     source:       str,
     library_name: str,
+    file_dir:     str,
     n_sample:     int   = 5000,
     ph:           float = 7.4,
-    file_dir:     str,
     job_id:       str   = None,  # claude: used to name the per-job tmp dir
     stop_event           = None,  # claude: threading.Event; set to cancel between compounds
     progress_cb          = None,
@@ -174,12 +174,12 @@ def prepare_library(
 def run_virtual_screening(
     protein_df_file: str,
     library_name:    str,
+    file_dir:        str,
     project_name:    str   = "my_screening",
     docking_method:  str   = "smina",
     exhaustiveness:  str   = "16",
     use_docker:      bool  = False,  # claude
     stop_event              = None,  # claude: threading.Event; set to cancel between compounds
-    file_dir:        str,
     progress_cb              = None,
 ) -> dict:
     """

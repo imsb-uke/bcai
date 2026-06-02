@@ -223,7 +223,7 @@ Parameters:
 - `file_dir`: base output directory for generated files
 
 ## File directory
-Every tool that accepts a `file_dir` parameter must receive the value from `File dir:` in your context. Never use the default `"files"` — always pass the user-specific path (e.g. `files/behnam/`). This keeps each user's files isolated.
+Every tool that accepts a `file_dir` parameter must receive the value from `File dir:` in your context. Never use the default `"files"` — always pass the user-specific path (e.g. `files/behnam/`). This keeps each user's files isolated. When saving a workflow, include `file_dir` in **every step's args** — not just some steps.
 
 ## Other notes
 - To download the pdb file given the pdb id use `get_pdb` and NOT `download_structure`.

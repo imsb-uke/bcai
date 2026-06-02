@@ -1,0 +1,30 @@
+{
+  "name": "seq_AAATTTCCCAAATTT_drugbank5_screen",
+  "description": "Prepare ESM3-predicted protein and screen drugbank_5 with smina (exhaustiveness 16).",
+  "created_at": "2026-06-02T08:28:03.697479",
+  "steps": [
+    {
+      "id": "step1",
+      "tool": "prepare_protein",
+      "args": {
+        "pdb_file": "files/behnam/seq_AAATTTCCCAAATTT.pdb",
+        "protein_name": "seq_AAATTTCCCAAATTT",
+        "project_name": "seq_AAATTTCCCAAATTT_drugbank5",
+        "docking_method": "smina",
+        "ph": 7.4
+      }
+    },
+    {
+      "id": "step2",
+      "tool": "run_virtual_screening",
+      "args": {
+        "protein_df_file": "${step1.protein_df_file}",
+        "library_name": "drugbank_5",
+        "project_name": "seq_AAATTTCCCAAATTT_drugbank5",
+        "docking_method": "smina",
+        "exhaustiveness": "16",
+        "file_dir": "files/behnam/"
+      }
+    }
+  ]
+}

@@ -41,13 +41,13 @@ mcp = FastMCP(name="StructureAgent")
 @mcp.tool()
 def run_af3(
     protein_sequence:       list,
+    file_dir:               str,
     n_chain_per_sequence:   list | None = None,
     uniprot_id:             list | None = None,
     ligand_sdf_dir:         str  | None = None,
     n_ligand:               int         = 1,
     project_name:           str         = "my_project",
     af3_path:               str  | None = None,
-    file_dir:               str,
 ) -> dict:
     """
     Run AlphaFold 3 structure prediction. Returns a job_id immediately;
@@ -100,9 +100,9 @@ def run_af3(
 def run_esm3(
     protein_input: dict,
     task:          str,
+    file_dir:      str,
     protein_name:  str = "my_protein",
     model_name:    str = "esm3-large-2024-03",
-    file_dir:      str,
 ) -> dict:
     """
     Run ESM3 structure or sequence prediction. Returns a job_id immediately;

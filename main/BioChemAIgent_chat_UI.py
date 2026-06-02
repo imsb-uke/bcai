@@ -15,6 +15,16 @@ from src.history import save_history, load_history, message_to_dict
 st.set_page_config(page_title="BioChemAIgent Chat", page_icon="💊", layout="wide")
 st.title("BioChemAIgent Chat")
 
+# claude: slightly darker background inside expanded folders in the Files sidebar
+st.markdown("""
+<style>
+[data-testid="stExpanderDetails"] {
+    background-color: rgba(0, 0, 0, 0.06);
+    border-radius: 4px;
+}
+</style>
+""", unsafe_allow_html=True)
+
 user_file = os.environ["USER_FILE"]
 if not os.path.exists(user_file):
     os.system(f"echo 'username,password,free_questions,n_questions' > {user_file}")
@@ -283,21 +293,35 @@ with st.sidebar:
         st.rerun()
     # ---
 
-    with st.container(height=300):
-        # Get the file list sorted by date
-        file_list = sorted(os.listdir(FILE_DIR),
-                           key=lambda f: os.path.getmtime(os.path.join(FILE_DIR, f)), reverse=True)
-        for f in file_list:
-            st.caption(f)
-
-    # claude ---
-    # Download
-    _dl_files = [f for f in file_list if os.path.isfile(os.path.join(FILE_DIR, f))]
-    if _dl_files:
-        _dl_selected = st.selectbox("Download file", _dl_files, label_visibility="collapsed")
-        with open(os.path.join(FILE_DIR, _dl_selected), "rb") as _df:
-            st.download_button("⬇ Download", _df, file_name=_dl_selected)
-    # ---
+    # claude: tree view — subdirs as expanders, files with inline download buttons
+    with st.container(height=400):
+        all_entries = sorted(
+            os.listdir(FILE_DIR),
+            key=lambda f: os.path.getmtime(os.path.join(FILE_DIR, f)),
+            reverse=True,
+        )
+        for entry in all_entries:
+            entry_path = os.path.join(FILE_DIR, entry)
+            if os.path.isdir(entry_path):
+                sub_files = sorted(
+                    [f for f in os.listdir(entry_path)
+                     if os.path.isfile(os.path.join(entry_path, f))],
+                    key=lambda f: os.path.getmtime(os.path.join(entry_path, f)),
+                    reverse=True,
+                )
+                with st.expander(f"📁 {entry}  ({len(sub_files)})"):
+                    for sf in sub_files:
+                        c1, c2 = st.columns([3, 1])
+                        c1.caption(sf)
+                        with open(os.path.join(entry_path, sf), "rb") as fh:
+                            c2.download_button("⬇", fh, file_name=sf,
+                                               key=f"dl_{entry}_{sf}")
+            else:
+                c1, c2 = st.columns([3, 1])
+                c1.caption(entry)
+                with open(entry_path, "rb") as fh:
+                    c2.download_button("⬇", fh, file_name=entry,
+                                       key=f"dl_{entry}")
 
     st.markdown("---")
 

@@ -347,7 +347,8 @@ async def main() -> None:
                         json.dump({
                             'job_id'  : jid,
                             'type'    : result.get('type', 'job'),
-                            'message' : f"'{result.get('type', 'A background job')}' is ready — ask me to show the results.",
+                            'result'  : result.get('result', {}),   # claude: full result so UI can forward it to agent without check_status round-trip
+                            'message' : f"'{result.get('type', 'A background job')}' is ready.",
                         }, f, indent=2)
                     os.system(f"echo '{datetime.now()} | Job {jid} done — flagged {info['flag_file']}' >> client.log")
                 elif result.get('status') == 'failed':

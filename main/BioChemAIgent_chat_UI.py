@@ -65,11 +65,9 @@ if "waiting_for_response" not in st.session_state:
 if "job_ready_mtime" not in st.session_state:
     st.session_state["job_ready_mtime"] = os.path.getmtime(JOB_READY_FILE) if os.path.exists(JOB_READY_FILE) else 0.0
 
-if "job_notification" not in st.session_state:    # persistent banner text; None = no banner
-    st.session_state["job_notification"] = None
-if "job_notification_data" not in st.session_state:  # full job_ready payload for "Tell agent"
-    st.session_state["job_notification_data"] = {}
-if "pending_agent_message" not in st.session_state:  # auto-sent message triggered by "Tell agent"
+if "job_notification_queue" not in st.session_state:  # claude: queue of completed job dicts; shown one at a time
+    st.session_state["job_notification_queue"] = []
+if "pending_agent_message" not in st.session_state:   # auto-sent message triggered by "Tell agent"
     st.session_state["pending_agent_message"] = None
 
 if "uploader_key" not in st.session_state:  # claude: incremented after upload to reset widget
@@ -202,9 +200,8 @@ with st.sidebar:
     if logout:
         if "user" in st.session_state:
             del st.session_state["user"]
-        st.session_state["job_notification"]      = None
-        st.session_state["job_notification_data"] = {}
-        st.session_state["pending_agent_message"] = None
+        st.session_state["job_notification_queue"] = []
+        st.session_state["pending_agent_message"]  = None
         st.rerun()
 
     if clear_chat:
@@ -396,23 +393,26 @@ for msg in st.session_state.messages:
 if job_ready_changed(JOB_READY_FILE):
     try:
         with open(JOB_READY_FILE, 'r') as f:
-            job_info = json.load(f)
-        st.session_state["job_notification"]      = job_info.get('message', 'A background job has completed!')
-        st.session_state["job_notification_data"] = job_info   # claude: full payload for "Tell agent"
+            _data = json.load(f)
+        # file is now always a list; guard against old single-dict format
+        _jobs = _data if isinstance(_data, list) else [_data]
+        st.session_state["job_notification_queue"].extend(_jobs)
     except Exception:
-        st.session_state["job_notification"]      = 'A background job has completed!'
-        st.session_state["job_notification_data"] = {}
+        st.session_state["job_notification_queue"].append({'message': 'A background job has completed!'})
     os.remove(JOB_READY_FILE)  # delete so it never re-triggers on page reload or new session
     st.rerun()
 
-# Dismissable banner — stays until the user clicks ✕ or tells the agent
-if st.session_state.get("job_notification"):
+# Dismissable banner — shows queue[0]; buttons pop it so the next one appears automatically
+_queue = st.session_state.get("job_notification_queue", [])
+if _queue:
+    _d      = _queue[0]
+    _n_more = len(_queue) - 1
+    _suffix = f"  (+{_n_more} more)" if _n_more > 0 else ""
     col1, col2, col3 = st.columns([16, 3, 1])
     with col1:
-        st.success(f"✅ {st.session_state['job_notification']}")
+        st.success(f"✅ {_d.get('message', 'A background job has completed!')}{_suffix}")
     with col2:
         if st.button("📋 Tell agent", key="notify_agent"):
-            _d = st.session_state["job_notification_data"]
             st.session_state["pending_agent_message"] = (
                 f"Background job **'{_d.get('type', 'unknown')}'** "
                 f"(job_id: `{_d.get('job_id', '?')}`) has completed. "
@@ -420,13 +420,11 @@ if st.session_state.get("job_notification"):
                 f"```json\n{json.dumps(_d.get('result', {}), indent=2)}\n```\n\n"
                 f"Please summarise the results for me."
             )
-            st.session_state["job_notification"]      = None
-            st.session_state["job_notification_data"] = {}
+            st.session_state["job_notification_queue"].pop(0)
             st.rerun()
     with col3:
         if st.button("✕", key="dismiss_job_notification"):
-            st.session_state["job_notification"]      = None
-            st.session_state["job_notification_data"] = {}
+            st.session_state["job_notification_queue"].pop(0)
             st.rerun()
 # ---
 

@@ -343,13 +343,23 @@ async def main() -> None:
                 result = utils.str2dict(raw)
                 if result.get('status') == 'done':
                     info = _pending_jobs.pop(jid)
+                    # claude: append to list so multiple completions aren't lost if UI hasn't consumed yet
+                    _existing = []
+                    if os.path.exists(info['flag_file']):
+                        try:
+                            with open(info['flag_file']) as _fh:
+                                _data = json.load(_fh)
+                                _existing = _data if isinstance(_data, list) else [_data]
+                        except Exception:
+                            _existing = []
+                    _existing.append({
+                        'job_id'  : jid,
+                        'type'    : result.get('type', 'job'),
+                        'result'  : result.get('result', {}),
+                        'message' : f"'{result.get('type', 'A background job')}' is ready.",
+                    })
                     with open(info['flag_file'], 'w') as f:
-                        json.dump({
-                            'job_id'  : jid,
-                            'type'    : result.get('type', 'job'),
-                            'result'  : result.get('result', {}),   # claude: full result so UI can forward it to agent without check_status round-trip
-                            'message' : f"'{result.get('type', 'A background job')}' is ready.",
-                        }, f, indent=2)
+                        json.dump(_existing, f, indent=2)
                     os.system(f"echo '{datetime.now()} | Job {jid} done — flagged {info['flag_file']}' >> client.log")
                 elif result.get('status') == 'failed':
                     info = _pending_jobs.pop(jid)

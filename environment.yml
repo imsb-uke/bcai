@@ -7,6 +7,7 @@ dependencies:
   - python=3.11
   - pip
   - mamba
+  - setuptools<81
   # core scientific stack
   - numpy<2
   - pandas

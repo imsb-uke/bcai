@@ -6,7 +6,7 @@ Render one or more structures (PDB/CIF/SDF/MOL2) with fine-grained control over 
 
 **Note:**
 If no style was requested, set the input to the following setting:
-- Proteins (PDB/CIF): cartoon, opacity: 1.0
+- Proteins (PDB/CIF): cartoon, color: "spectrum", opacity: 1.0
 - Surface: on, type = VDW, opacity 0.6 colored by b-factor
 - Non-protein atoms (HETATM) inside PDB/CIF: stick, radius:0.1
 - External ligands (SDF/MOL2): stick, radius:0.1 (For ligands, by defult use SDF and not PDB)
@@ -194,3 +194,4 @@ and surface
 * **Target precisely:** use `hetflag:true` for ligands; `invert:true` with `hetflag:true` means “protein only”.
 * **Consistent legends:** if you override ligand colors, do it **after** defaults so the legend reflects your colors.
 * **Prefare `style_rules`** and you use `style_rules`, you don't use `chain_color_map` anymore.
+* **Cartoon requires a color:** always include `"color"` or `"colorscheme"` in any cartoon style — without one it renders white and is invisible on the default white background. Safe default: `"color": "spectrum"`.

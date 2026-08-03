@@ -1,4 +1,4 @@
-This project is licensed under the Creative Commons Attribution-NonCommercial 4.0 International License (CC BY-NC 4.0).
+This project is licensed under the PolyForm Noncommercial License 1.0.0 — see `LICENSE`. Free for academic, research, and other noncommercial use. Commercial use requires a separate commercial license. Contact: yousefi.bme@gmail.com, sbonn@uke.de
 
 # BioChemAIgent: An AI-driven Protein Modeling and Docking Framework for Structure-Based Drug Discovery
 

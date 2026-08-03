@@ -1,7 +1,5 @@
 # ESM3 Tool Documentation
 
-To complete the protein sequence, we need to provide the `protein_input` field in the request. Let's proceed by setting up this field correctly. Please hold on a moment.
-
 ## Overview
 
 ESM3 is a protain language model designed to perform protein sequence analysis, including sequence completion, analyzing protein structures, and various protein properties based on given input data. An MCP tool named as ```run_esm3``` is provided to run ESM3 perfroming different tasks:
@@ -17,7 +15,7 @@ ESM3 is a protain language model designed to perform protein sequence analysis, 
 
 Important note: `protein_input` and `task` are the most important inputs. See examples below.
 
-1. **protein_input:** a dictionary with the following keys
+1. **protein_input:** a dictionary with the following keys. **Always include all six keys — use `""` for unused fields, never `null` or omit the key.**
 * pkl_file: A pickle file of the ESM protein object. If available, this will be used first.
 * pdb_file: A PDB file of the predicted protein structure, if available. This is used if `pkl_file` is not provided.
 * sequence: The protein sequence. If `pkl_file` and `pdb_file` are not provided, sequence is mandatory.

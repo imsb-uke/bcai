@@ -11,9 +11,10 @@ The online user interface is availabe at [https://bcai.ims.bio/](https://bcai.im
 ### Local Installation and Running BioChemAIgent via Docker
 Download external MCP servers
 ```
-cd mcp_external
+cd external-mcp-servers
 git clone https://github.com/Augmented-Nature/PDB-MCP-Server.git
 git clone https://github.com/Augmented-Nature/ChEMBL-MCP-Server.git
+git clone https://github.com/Augmented-Nature/Augmented-Nature-UniProt-MCP-Server.git
 ```
 
 Build the image and run the conainer

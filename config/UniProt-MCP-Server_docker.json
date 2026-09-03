@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "uniprot-server": {
+      "command": "node",
+      "args": ["/workspace/mcp_external/UniProt-MCP-Server/build/index.js"]
+    }
+  }
+}

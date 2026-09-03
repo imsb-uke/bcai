@@ -5,16 +5,16 @@ env_chem_agent
 
 *.pkl
 *.pdb
-*.html
-*.csv
+#*.html
+#*.csv
 *.log
 *.sdf
 *.pdb
 *.pdbqt
 
 */test/*
-*/files/*
-*/files*/
+#*/files/*
+#*/files*/
 **/files/*
 */eval/*
 **/session/*
@@ -23,11 +23,13 @@ env_chem_agent
 **/questions_llm/*
 **/docking_lab/*
 **/eval_result/*
+from_server/
 
-mcp_external/*
-!mcp_external/install.sh
+user_data/*
+!user_data/*.md
 
-config*/*
+external-mcp-servers/*
+!external-mcp-servers/README.md
 
 # Data directory — ignore all contents, keep only MD files
 data/*
@@ -37,5 +39,4 @@ data/*
 software/*
 !software/*.md
 
-# Old versions
-old_versions/
+!case_studies/files/*

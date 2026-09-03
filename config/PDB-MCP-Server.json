@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "pdb-server": {
+      "command": "node",
+      "args": ["/Users/behnam/Desktop/My_Codes/PDB-MCP-Server/build/index.js"]
+    }
+  }
+}

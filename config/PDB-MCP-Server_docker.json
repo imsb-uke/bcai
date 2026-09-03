@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "pdb-server": {
+      "command": "node",
+      "args": ["/workspace/mcp_external/PDB-MCP-Server/build/index.js"]
+    }
+  }
+}

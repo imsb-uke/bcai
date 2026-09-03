@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "chembl": {
+      "command": "node",
+      "args": ["/workspace/mcp_external/ChEMBL-MCP-Server/build/index.js"]
+    }
+  }
+}

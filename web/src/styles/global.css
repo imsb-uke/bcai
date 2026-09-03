@@ -1,0 +1,90 @@
+/* ----------------------------
+   CSS variables
+   ---------------------------- */
+
+:root {
+  --bg-0      : #0d0f12;      /* app background */
+  --bg-1      : #141720;      /* sidebar / panel background */
+  --bg-2      : #1c2030;      /* message bubbles, cards */
+  --bg-3      : #242840;      /* hover / selected states */
+  --border    : #2a2f44;
+  --text-1    : #e4e9f5;      /* primary text */
+  --text-2    : #8892ae;      /* secondary / labels */
+  --text-3    : #505878;      /* muted / placeholder */
+  --accent    : #4a7fff;
+  --accent-h  : #3a6fee;      /* accent hover */
+  --success   : #2ecc71;
+  --warning   : #f39c12;
+  --error     : #e74c3c;
+  --tool-bg   : #161c30;
+  --tool-bd   : #273050;
+
+  --radius    : 10px;
+  --radius-sm : 6px;
+  --font      : -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+  --font-mono : 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+}
+
+/* Light theme — warm off-whites, easy on the eyes */
+[data-theme="light"] {
+  --bg-0      : #edeef2;   /* warm grey — not pure white */
+  --bg-1      : #e5e7ed;   /* sidebar / panels, slightly darker */
+  --bg-2      : #d8dae3;   /* cards, bubbles */
+  --bg-3      : #cdd0db;   /* hover / selected */
+  --border    : #bfc3d0;
+  --text-1    : #1c1f2e;
+  --text-2    : #474d66;
+  --text-3    : #7a80a0;
+  --accent    : #3a6fee;
+  --accent-h  : #2a5fe0;
+  --tool-bg   : #d4d7e5;
+  --tool-bd   : #b8bccc;
+}
+
+/* ----------------------------
+   Reset
+   ---------------------------- */
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin    : 0;
+  padding   : 0;
+}
+
+html, body, #root {
+  height    : 100%;
+  overflow  : hidden;
+  background: var(--bg-0);
+  color     : var(--text-1);
+  font-family: var(--font);
+  font-size : 14px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+button {
+  cursor     : pointer;
+  border     : none;
+  background : none;
+  font-family: inherit;
+  font-size  : inherit;
+  color      : inherit;
+}
+
+input, textarea, select {
+  font-family: inherit;
+  font-size  : inherit;
+  color      : var(--text-1);
+}
+
+a { color: var(--accent); }
+
+/* ----------------------------
+   Scrollbar
+   ---------------------------- */
+
+::-webkit-scrollbar       { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text-3); }

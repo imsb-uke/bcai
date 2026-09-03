@@ -64,7 +64,7 @@ task : 'structure'
 ```
 
 ### Completing a Sequence
-To complete a protein sequence with missing parts denoted by underscores:
+To complete a protein sequence with missing residues, mark each missing position with an underscore `_`. **`_` is the only accepted mask character** — any other placeholder (e.g. `?`, `X`, `-`) is not a valid ESM3 token and will cause the job to fail. If the user's sequence uses a different placeholder character, convert it to `_` before calling this tool.
 ```
 {
 protein_input : {
@@ -146,6 +146,7 @@ task : 'sasa'
 ### Common Errors
 - **Missing Fields**: Ensure that at least one of the required fields of the `protein_input` dictionary is provided.
 - **Invalid Files**: Check for correct paths and formats for `pkl_file` or `pdb_file`.
+- **Invalid Mask Character**: For `task: 'sequence'`, missing residues must be `_`, not `?`, `X`, `-`, or any other character. A sequence with an unrecognized character will fail the job.
 
 ## Best Practices
 

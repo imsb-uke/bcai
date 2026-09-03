@@ -1,0 +1,16 @@
+# API backend (Steps 1 + 2).
+fastapi
+uvicorn[standard]
+pydantic>=2
+python-dotenv
+openai
+ollama
+mcp==1.29.0          # pinned — mcp 2.0.0 (2026-07-28) is a breaking release:
+                     # mcp.server.fastmcp is gone and mcp.client.streamable_http's
+                     # streamablehttp_client was renamed/moved. 1.29.0 is the last
+                     # stable pre-2.0 release.
+# Step 2 — auth + DB
+sqlalchemy
+bcrypt
+python-jose[cryptography]
+python-multipart       # required for OAuth2PasswordRequestForm

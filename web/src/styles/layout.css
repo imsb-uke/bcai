@@ -1,0 +1,127 @@
+/* ----------------------------
+   Three-panel shell
+   ---------------------------- */
+
+.app-shell {
+  display              : grid;
+  grid-template-columns: 280px 1fr 280px;
+  height               : 100vh;
+  overflow             : hidden;
+  background           : var(--bg-0);
+}
+
+/* Mobile bar + backdrop are desktop-hidden */
+.mobile-bar      { display: none; }
+.mobile-backdrop { display: none; }
+
+/* Tablet: keep sidebar + chat, drop the right panel (still on desktop ≥960) */
+@media (max-width: 960px) and (min-width: 769px) {
+  .app-shell { grid-template-columns: 280px 1fr; }
+  .job-panel { display: none; }
+}
+
+/* ----------------------------
+   Job-ready notification banner
+   ---------------------------- */
+
+.notif-banner {
+  position  : fixed;
+  top       : 0;
+  left      : 50%;
+  transform : translateX(-50%);
+  z-index   : 100;
+  display   : flex;
+  align-items: center;
+  gap       : 12px;
+  padding   : 10px 18px;
+  background: var(--bg-2);
+  border    : 1px solid var(--success);
+  border-top: none;
+  border-radius: 0 0 var(--radius) var(--radius);
+  box-shadow: 0 4px 16px rgba(0,0,0,.3);
+  font-size : 13px;
+  white-space: nowrap;
+}
+.notif-msg       { color: var(--text-1); }
+.notif-more      { color: var(--text-3); font-size: 12px; }
+.notif-actions   { display: flex; gap: 6px; }
+.notif-btn-tell {
+  padding      : 4px 10px;
+  background   : rgba(46,204,113,.15);
+  color        : var(--success);
+  border       : 1px solid rgba(46,204,113,.3);
+  border-radius: var(--radius-sm);
+  font-size    : 12px;
+  font-weight  : 600;
+  cursor       : pointer;
+  transition   : background .15s;
+}
+.notif-btn-tell:hover    { background: rgba(46,204,113,.3); }
+.notif-btn-dismiss {
+  width        : 24px;
+  height       : 24px;
+  border-radius: var(--radius-sm);
+  background   : var(--bg-3);
+  color        : var(--text-2);
+  font-size    : 12px;
+  cursor       : pointer;
+  transition   : background .15s;
+}
+.notif-btn-dismiss:hover { background: var(--error); color: #fff; }
+
+/* Mobile: single column + top bar; sidebar & panel slide in as overlays */
+@media (max-width: 768px) {
+  .app-shell {
+    grid-template-columns: 1fr;
+    grid-template-rows   : 44px 1fr;
+  }
+
+  .mobile-bar {
+    display        : flex;
+    align-items    : center;
+    justify-content: space-between;
+    padding        : 0 12px;
+    background     : var(--bg-1);
+    border-bottom  : 1px solid var(--border);
+    grid-column    : 1;
+  }
+  .mobile-title { font-size: 14px; font-weight: 600; color: var(--text-1); }
+  .mobile-btn {
+    width    : 32px;
+    height   : 32px;
+    font-size: 16px;
+    color    : var(--text-2);
+    border-radius: var(--radius-sm);
+  }
+  .mobile-btn:hover { background: var(--bg-3); }
+
+  .mobile-backdrop {
+    display   : block;
+    position  : fixed;
+    inset     : 0;
+    z-index   : 40;
+    background: rgba(0,0,0,.4);
+  }
+
+  /* Sidebar slides in from the left */
+  .sidebar {
+    position  : fixed;
+    top       : 0; left: 0; bottom: 0;
+    width     : 280px;
+    z-index   : 50;
+    transform : translateX(-100%);
+    transition: transform .2s ease;
+  }
+  .app-shell.nav-sidebar .sidebar { transform: translateX(0); }
+
+  /* Right panel slides in from the right */
+  .job-panel {
+    position  : fixed;
+    top       : 0; right: 0; bottom: 0;
+    width     : 280px;
+    z-index   : 50;
+    transform : translateX(100%);
+    transition: transform .2s ease;
+  }
+  .app-shell.nav-panel .job-panel { transform: translateX(0); }
+}

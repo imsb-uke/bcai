@@ -1,31 +1,33 @@
-version: '3.3'
-
 services:
-    bcai-streamlit:
-        build:
-            context: .
-        container_name: bcai
-        tty: true
-        restart: unless-stopped
-        labels:
-            - "traefik.enable=true"
-            - "traefik.http.routers.bcai-rule-name.rule=Host(`bcai.ims.bio`)"
-            - "traefik.http.services.bcai-rule-name.loadbalancer.server.port=8501"
-            - "traefik.http.routers.bcai-rule-name.middlewares=dbauth"
-            - "traefik.http.middlewares.dbauth.basicauth.usersfile=/configuration/auth/users"
-            - "traefik.http.routers.bcai-rule-name.tls.certresolver=letsencrypt"
-        volumes:
-            - './:/workspace'
-        networks:
-            - traefik
-            - db
-        deploy:
-            resources:
-                limits:
-                    cpus: "12"
-                    memory: "16g"
 
-networks:
-    db:
-    traefik:
-        external: true
+  api:
+    build:
+      context: .
+    platform: linux/amd64
+    container_name: ddp-api
+    expose:
+      - "8000"
+    restart: unless-stopped
+    volumes:
+      - ./api:/workspace/api
+      - ./mcp:/workspace/mcp
+      - ./config:/workspace/config
+      - ./docs:/workspace/docs
+      - ./case_studies:/workspace/case_studies
+      - ./data:/workspace/data              # drug libraries, datasets — lives at code/data/
+      - ./user_data:/workspace/user_data    # per-user data + SQLite DB — lives at code/user_data/
+      - ./software:/workspace/software      # docking binaries (smina/gnina/vina)
+      - ./external-mcp-servers/PDB-MCP-Server:/workspace/mcp_external/PDB-MCP-Server
+      - ./external-mcp-servers/ChEMBL-MCP-Server:/workspace/mcp_external/ChEMBL-MCP-Server
+      - ./external-mcp-servers/UniProt-MCP-Server:/workspace/mcp_external/UniProt-MCP-Server
+
+  web:
+    build:
+      context: ./web
+    platform: linux/amd64
+    container_name: ddp-web
+    ports:
+      - "3000:80"      # browser hits http://localhost:3000
+    depends_on:
+      - api
+    restart: unless-stopped

@@ -2,7 +2,6 @@ FROM mambaorg/micromamba:1.5.10
 
 WORKDIR /workspace
 
-# System dependencies
 USER root
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
@@ -10,42 +9,39 @@ RUN apt-get update && \
         nodejs \
         npm \
         wget \
-        tmux \
         git \
         libboost-all-dev \
     && rm -rf /var/lib/apt/lists/*
-
 USER $MAMBA_USER
 
-# Copy environment file
+# Create the conda env
 COPY --chown=$MAMBA_USER:$MAMBA_USER environment.yml /tmp/environment.yml
+RUN micromamba env create -f /tmp/environment.yml -y && micromamba clean --all --yes
 
-# Create conda env with micromamba
-RUN micromamba env create -f /tmp/environment.yml -y && \
-    micromamba clean --all --yes
-
-# Make bcai the default env
 ENV MAMBA_DEFAULT_ENV=bcai
 ENV CONDA_DEFAULT_ENV=bcai
 ENV PATH=/opt/conda/envs/bcai/bin:$PATH
+# Unbuffer stdout/stderr so print()-based logging shows up in `docker logs`
+# immediately instead of sitting in a pipe buffer.
+ENV PYTHONUNBUFFERED=1
 
-# Auto-activate bcai in every bash (also inside tmux panes)
-RUN echo 'eval "$(micromamba shell hook -s bash)"' >> ~/.bashrc && \
-    echo 'micromamba activate bcai' >> ~/.bashrc
+# Add FastAPI + auth deps
+COPY --chown=$MAMBA_USER:$MAMBA_USER api/requirements.txt /tmp/api-requirements.txt
+RUN pip install --no-cache-dir -r /tmp/api-requirements.txt
 
-# Use bash -lc for subsequent RUN instructions
-SHELL ["bash", "-lc"]
+# Copy application code
+COPY --chown=$MAMBA_USER:$MAMBA_USER api/           /workspace/api/
+COPY --chown=$MAMBA_USER:$MAMBA_USER mcp/           /workspace/mcp/
+COPY --chown=$MAMBA_USER:$MAMBA_USER config/        /workspace/config/
+COPY --chown=$MAMBA_USER:$MAMBA_USER docs/          /workspace/docs/
+COPY --chown=$MAMBA_USER:$MAMBA_USER case_studies/  /workspace/case_studies/
 
-# Optional sanity check (use micromamba run to exec inside bcai)
-RUN echo "Conda envs:" && micromamba env list && \
-    micromamba run -n bcai python -c "import sys; print('Python', sys.version)" && \
-    micromamba run -n bcai python -c "import torch; print('Torch', __import__('torch').__version__)"
+EXPOSE 8000
 
-EXPOSE 8501
+# data/ is for drug libraries; user_data/ holds per-user dirs + SQLite DB.
+# Both are volume-mounted at runtime; mkdir ensures they exist before the mount.
+RUN mkdir -p /workspace/data /workspace/user_data && \
+    chown $MAMBA_USER:$MAMBA_USER /workspace/data /workspace/user_data
 
-# Add entrypoint
-COPY entrypoint.sh /workspace/entrypoint.sh
+COPY --chown=$MAMBA_USER:$MAMBA_USER entrypoint.sh /workspace/entrypoint.sh
 ENTRYPOINT ["/workspace/entrypoint.sh"]
-	
-# Default command
-CMD ["bash"]

@@ -1,0 +1,33 @@
+<svg viewBox="0 0 220 150" xmlns="http://www.w3.org/2000/svg">
+  <!-- Hexagon 1 (left ring) -->
+  <polygon points="78,39 110,57 110,93 78,111 46,93 46,57"
+           fill="none" stroke="#378ADD" stroke-width="6" stroke-linejoin="round"/>
+
+  <!-- Hexagon 2 (right ring) — shares edge with hex 1 -->
+  <polygon points="142,39 174,57 174,93 142,111 110,93 110,57"
+           fill="none" stroke="#378ADD" stroke-width="6" stroke-linejoin="round"/>
+
+  <!-- Inner aromatic circles -->
+  <circle cx="78"  cy="75" r="20" fill="none" stroke="#85B7EB" stroke-width="4"/>
+  <circle cx="142" cy="75" r="20" fill="none" stroke="#85B7EB" stroke-width="4"/>
+
+  <!-- Substituents — left side -->
+  <line x1="46" y1="57"  x2="26" y2="46"  stroke="#378ADD" stroke-width="5"/>
+  <circle cx="21" cy="43"  r="7" fill="#378ADD"/>
+  <line x1="46" y1="93"  x2="26" y2="104" stroke="#378ADD" stroke-width="5"/>
+  <circle cx="21" cy="107" r="7" fill="#378ADD"/>
+
+  <!-- Substituents — right side -->
+  <line x1="174" y1="57"  x2="194" y2="46"  stroke="#378ADD" stroke-width="5"/>
+  <circle cx="199" cy="43"  r="7" fill="#378ADD"/>
+  <line x1="174" y1="93"  x2="194" y2="104" stroke="#378ADD" stroke-width="5"/>
+  <circle cx="199" cy="107" r="7" fill="#378ADD"/>
+
+  <!-- Substituent — top (hex 1) -->
+  <line x1="78"  y1="39"  x2="78"  y2="19"  stroke="#378ADD" stroke-width="5"/>
+  <circle cx="78"  cy="14"  r="7" fill="#85B7EB"/>
+
+  <!-- Substituent — bottom (hex 2) -->
+  <line x1="142" y1="111" x2="142" y2="131" stroke="#378ADD" stroke-width="5"/>
+  <circle cx="142" cy="136" r="7" fill="#85B7EB"/>
+</svg>

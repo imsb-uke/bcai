@@ -1,0 +1,62 @@
+services:
+
+  api:
+    build:
+      context: .
+    platform: linux/amd64
+    container_name: ddp-api
+    expose:
+      - "8000"
+    restart: unless-stopped
+    volumes:
+      - ./api:/workspace/api
+      - ./mcp:/workspace/mcp
+      - ./config:/workspace/config
+      - ./docs:/workspace/docs
+      - ./case_studies:/workspace/case_studies
+      - ./data:/workspace/data              # drug libraries, datasets — lives at code/data/
+      - ./user_data:/workspace/user_data    # per-user data + SQLite DB — lives at code/user_data/
+      - ./software:/workspace/software      # docking binaries (smina/gnina/vina)
+      - ./external-mcp-servers/PDB-MCP-Server:/workspace/mcp_external/PDB-MCP-Server
+      - ./external-mcp-servers/ChEMBL-MCP-Server:/workspace/mcp_external/ChEMBL-MCP-Server
+      - ./external-mcp-servers/UniProt-MCP-Server:/workspace/mcp_external/UniProt-MCP-Server
+    networks:
+      - dda
+
+  web:
+    build:
+      context: ./web
+    platform: linux/amd64
+    container_name: ddp-web
+#    ports:
+#      - "3000:80"      # browser hits http://localhost:3000
+    depends_on:
+      - api
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      # /api/* — no Basic Auth; already protected by the app's own JWT bearer tokens
+      - "traefik.http.routers.bcai-api.rule=Host(`bcai.ims.bio`) && PathPrefix(`/api`)"
+      - "traefik.http.routers.bcai-api.service=bcai-dev-rule-name"
+      - "traefik.http.routers.bcai-api.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.bcai-api.priority=100"
+      # everything else — gated by Basic Auth (hides the app from drive-by traffic)
+      - "traefik.http.routers.bcai-dev-rule-name.rule=Host(`bcai.ims.bio`)"
+      - "traefik.http.routers.bcai-dev-rule-name.middlewares=dbauth"
+      - "traefik.http.middlewares.dbauth.basicauth.usersfile=/configuration/auth/users"
+      - "traefik.http.routers.bcai-dev-rule-name.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.bcai-dev-rule-name.priority=1"
+      - "traefik.http.services.bcai-dev-rule-name.loadbalancer.server.port=80"
+    networks:
+      - traefik
+      - dda
+    deploy:
+      resources:
+        limits:
+          cpus: "12"
+          memory: "16g"
+
+networks:
+    dda:
+    traefik:
+        external: true

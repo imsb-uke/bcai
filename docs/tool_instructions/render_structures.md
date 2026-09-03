@@ -46,7 +46,7 @@ The above setting are not done automatically, you should set the input according
 {
   "model": 0,                 // int or [int,...]
   "chain": "A",               // str
-  "resi": [10,11,120],        // int|[...]
+  "resi": [10,11,120],        // int|[...]; a two-element entry is a range: [10,[50,60],120] -> 10,50,51,...,60,120
   "resn": ["BH4","WAT"],      // residue names
   "elem": "O",                // element
   "hetflag": true,            // HETATM (ligands/ions)
@@ -188,10 +188,27 @@ and surface
 }
 ```
 
+## Domain / Region Coloring (residue ranges)
+
+Use `[start, end]` inside a `resi` list to color a contiguous domain — no need to enumerate every residue number:
+
+```json
+{
+  "files": ["files/7CH1.pdb"],
+  "style_rules": [
+    { "select": { "model": 0, "hetflag": false, "chain": "A", "resi": [[1, 70]] },
+      "style":  { "cartoon": { "colorscheme": "spectrum", "opacity": 1.0 } } },
+    { "select": { "model": 0, "hetflag": false, "chain": "A", "resi": [[519, 737]] },
+      "style":  { "cartoon": { "color": "#ffa500", "opacity": 1.0 } } }
+  ],
+  "file_name": "domain_scene"
+}
+```
+
 ## Tips & Pitfalls
 * **Rule precedence:** the **last** style touching an atom takes effect.
 * **Water visibility:** waters often have only O atoms (no bonds). Use **sphere** (or sphere+stick), not stick alone.
 * **Target precisely:** use `hetflag:true` for ligands; `invert:true` with `hetflag:true` means “protein only”.
 * **Consistent legends:** if you override ligand colors, do it **after** defaults so the legend reflects your colors.
 * **Prefare `style_rules`** and you use `style_rules`, you don't use `chain_color_map` anymore.
-* **Cartoon requires a color:** always include `"color"` or `"colorscheme"` in any cartoon style — without one it renders white and is invisible on the default white background. Safe default: `"color": "spectrum"`.
+* **Cartoon requires a color:** always include `"color"` or `"colorscheme"` in any cartoon style — without one it renders white and is invisible on the default white background. Safe default: `"colorscheme": "spectrum"` (`"color": "spectrum"` does NOT work — `"spectrum"` is only valid under `colorscheme`).

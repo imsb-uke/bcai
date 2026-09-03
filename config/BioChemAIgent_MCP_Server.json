@@ -1,0 +1,10 @@
+{
+  "mcpServers": {
+    "bcai": {
+      "command": "python",
+      "args": [
+        "server.py"
+      ]
+    }
+  }
+}

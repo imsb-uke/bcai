@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "chembl": {
+      "command": "node",
+      "args": ["/Users/behnam/Desktop/My_Codes/ChEMBL-MCP-Server/build/index.js"]
+    }
+  }
+}

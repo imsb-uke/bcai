@@ -1,0 +1,198 @@
+.sidebar {
+  display       : flex;
+  flex-direction: column;
+  background    : var(--bg-1);
+  border-right  : 1px solid var(--border);
+  overflow      : hidden;
+}
+
+/* ----------------------------
+   Header
+   ---------------------------- */
+
+.sidebar-header {
+  display        : flex;
+  align-items    : center;
+  justify-content: space-between;
+  padding        : 16px 14px;
+  border-bottom  : 1px solid var(--border);
+  flex-shrink    : 0;
+}
+.sidebar-brand {
+  display    : flex;
+  align-items: center;
+  gap        : 8px;
+  font-size  : 15px;
+  font-weight: 600;
+  color      : var(--text-1);
+}
+.brand-logo {
+  height    : 24px;
+  width     : auto;
+  flex-shrink: 0;
+}
+
+/* Icon buttons (theme toggle + new chat) */
+.sidebar-header-actions {
+  display: flex;
+  gap    : 4px;
+}
+.btn-icon {
+  width        : 28px;
+  height       : 28px;
+  border-radius: var(--radius-sm);
+  background   : var(--bg-3);
+  color        : var(--text-2);
+  font-size    : 14px;
+  line-height  : 28px;
+  text-align   : center;
+  transition   : background .15s, color .15s;
+}
+.btn-icon:hover {
+  background: var(--accent);
+  color     : #fff;
+}
+
+/* ----------------------------
+   Section labels
+   ---------------------------- */
+
+.sidebar-label {
+  display       : block;
+  font-size     : 10px;
+  font-weight   : 700;
+  text-transform: uppercase;
+  letter-spacing: .07em;
+  color         : var(--text-3);
+  padding       : 12px 14px 4px;
+}
+
+/* ----------------------------
+   Model selector
+   ---------------------------- */
+
+.sidebar-section { flex-shrink: 0; }
+
+.model-select {
+  display      : block;
+  width        : calc(100% - 28px);
+  margin       : 0 14px;
+  background   : var(--bg-2);
+  border       : 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding      : 7px 10px;
+  color        : var(--text-1);
+  cursor       : pointer;
+  outline      : none;
+  transition   : border-color .15s;
+}
+.model-select:focus { border-color: var(--accent); }
+
+/* ----------------------------
+   Session list
+   ---------------------------- */
+
+.session-list {
+  flex      : 1;
+  overflow-y: auto;
+  padding-bottom: 8px;
+}
+.session-empty {
+  padding  : 8px 14px;
+  color    : var(--text-3);
+  font-size: 13px;
+}
+.session-item {
+  display       : flex;
+  align-items   : center;
+  gap           : 6px;
+  width         : 100%;
+  padding       : 8px 14px;
+  text-align    : left;
+  cursor        : pointer;
+  transition    : background .1s;
+}
+.session-item:hover  { background: var(--bg-2); }
+.session-item.active { background: var(--bg-3); }
+
+.session-title {
+  flex         : 1;
+  font-size    : 13px;
+  color        : var(--text-1);
+  white-space  : nowrap;
+  overflow     : hidden;
+  text-overflow: ellipsis;
+}
+
+/* Action buttons — hidden until the row is hovered */
+.session-actions {
+  display    : flex;
+  gap        : 2px;
+  opacity    : 0;
+  flex-shrink: 0;
+  transition : opacity .1s;
+}
+.session-item:hover .session-actions { opacity: 1; }
+
+.session-action {
+  width        : 20px;
+  height       : 20px;
+  border-radius: 4px;
+  font-size    : 11px;
+  color        : var(--text-3);
+  transition   : background .15s, color .15s;
+}
+.session-action:hover         { background: var(--bg-3); color: var(--text-1); }
+.session-action-del:hover     { background: var(--error); color: #fff; }
+
+/* Pulsing dot — a turn is running server-side for this session right now,
+   independent of whether it's the one currently open */
+@keyframes running-pulse {
+  0%, 100% { opacity: 1;  }
+  50%      { opacity: .3; }
+}
+.session-running-dot {
+  width        : 6px;
+  height       : 6px;
+  border-radius: 50%;
+  background   : var(--warning);
+  flex-shrink  : 0;
+  animation    : running-pulse 1.2s ease-in-out infinite;
+}
+
+/* ----------------------------
+   Footer — user info + sign-out
+   ---------------------------- */
+
+.sidebar-footer {
+  border-top : 1px solid var(--border);
+  padding    : 12px 14px;
+  flex-shrink: 0;
+}
+.user-info {
+  display        : flex;
+  justify-content: space-between;
+  align-items    : baseline;
+  margin-bottom  : 8px;
+}
+.user-name  { font-size: 13px; font-weight: 500; }
+.user-quota { font-size: 11px; color: var(--text-3); }
+
+.footer-actions {
+  display    : flex;
+  align-items: center;
+  gap        : 6px;
+}
+.btn-logout {
+  flex         : 1;
+  padding      : 6px 8px;
+  font-size    : 12px;
+  color        : var(--text-2);
+  border-radius: var(--radius-sm);
+  transition   : background .15s, color .15s;
+  text-align   : left;
+}
+.btn-logout:hover {
+  background: var(--bg-3);
+  color     : var(--text-1);
+}

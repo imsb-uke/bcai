@@ -1,41 +1,27 @@
 #!/usr/bin/env bash
+# Entrypoint for the API backend. Replaces bcai's "client.py & streamlit" combo
+# with a single uvicorn process — the API IS the long-running service now.
 set -e
 
-if [ ! -d "/workspace/mcp_external/PDB-MCP-Server" ]; then
-	echo "Cloning repo PDB-MCP-Server.git..."
-	git clone https://github.com/Augmented-Nature/PDB-MCP-Server.git /workspace/mcp_external/PDB-MCP-Server
-	echo "DONE"
-else
-	echo "Directory already exists, skipping clone."
-fi
+# The bcai env is already on PATH (see Dockerfile), so `uvicorn` resolves to it.
+cd /workspace
 
+# Named Docker volumes mount with root ownership; create directories at runtime
+mkdir -p /workspace/data
+mkdir -p /workspace/user_data
 
-if [ ! -d "/workspace/mcp_external/ChEMBL-MCP-Server" ]; then
-	echo "Cloning repo https://github.com/Augmented-Nature/ChEMBL-MCP-Server.git..."
-	git clone https://github.com/Augmented-Nature/ChEMBL-MCP-Server.git /workspace/mcp_external/ChEMBL-MCP-Server
-	echo "DONE"
-else
-	echo "Directory already exists, skipping clone."
-fi
+# External MCP servers are bind-mounted from source (not baked into the image),
+# so each needs a one-time npm build. Skipped once build/index.js exists.
+# Loops over whatever's actually present under mcp_external/ instead of a
+# hardcoded server list, so adding/removing a server needs no entrypoint change.
+shopt -s nullglob
+for dir in /workspace/mcp_external/*/; do
+    server=$(basename "$dir")
+    if [ -f "$dir/package.json" ] && [ ! -f "$dir/build/index.js" ]; then
+        echo "Building $server..."
+        (cd "$dir" && npm install && npm run build)
+    fi
+done
 
-
-cd /workspace/mcp_external
-echo "Installing the repositories"
-./install.sh
-echo "DONE"
-
-cd /workspace/main
-
-echo "Activating mamba"
-eval "$(mamba shell hook --shell bash)"
-eval "$(mamba activate bcai)"
-echo "DONE"
-
-echo "starting the scripts"
-
-# Kill all background jobs cleanly when the shell receives SIGINT or SIGTERM (e.g. Ctrl+C)
-trap 'kill $(jobs -p) 2>/dev/null; wait' SIGINT SIGTERM
-
-python client.py & streamlit run BioChemAIgent_chat_UI.py & wait
-
-exec "$@"
+echo "Starting Drug Discovery Platform API on :8000"
+exec uvicorn api.server:app --host 0.0.0.0 --port 8000

@@ -1,0 +1,33 @@
+# Select LLM model
+# LLM_MODEL = 'openai|gpt-5'
+LLM_MODEL = 'openrouter|openai/gpt-5.1'
+LLM_MODEL_LITERATURE = 'openrouter|openai/gpt-4o-mini'
+
+# Paths (override defaults set in api/config.py)
+USER_DATA_DIR = /workspace/user_data
+
+# Drug library directory (used by screening pipeline)
+LIBRARY_DIR = '../data/libraries'
+
+# Docking binaries (smina, gnina, vina) — absolute path so it works from any CWD
+SOFTWARE_DIR = /workspace/software
+
+# Settings
+MAX_TOOL_HOPS=8
+FREE_QUESTIONS_DEFAULT=200
+
+
+# API_keys (confidentional)
+OPENAI_API_KEY=
+
+OLLAMA_API_KEY=
+
+OPENROUTER_API_KEY=
+
+ESM3_TOKEN=
+
+AF3_PATH=
+
+S2_API_KEY=
+
+JWT_SECRET=
